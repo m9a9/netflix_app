@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:netflix_app/Features/Movies/movie.dart';
+import 'package:netflix_app/Features/Movies/Presentation/Views/movie_home_view.dart';
 import 'package:netflix_app/core/global/app_colors/dark_theme_colors.dart';
 import 'package:netflix_app/core/utils/styles.dart';
 
@@ -66,8 +66,10 @@ class _OnBoardingHomeViewState extends State<OnBoardingHomeView> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const MovieFake()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MovieHomeView()));
               },
               child: Container(
                 height: MediaQuery.of(context).size.height / 12,
