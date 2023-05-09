@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:netflix_app/Features/Movies/Presentation/Views/movie_home_view.dart';
-import 'package:netflix_app/core/global/app_colors/dark_theme_colors.dart';
-import 'package:netflix_app/core/utils/styles.dart';
 
+import '../widgets/custom_Button.dart';
 import '../widgets/custom_indicator.dart';
 import '../widgets/custom_slider.dart';
 
@@ -64,28 +63,15 @@ class _OnBoardingHomeViewState extends State<OnBoardingHomeView> {
             const SizedBox(
               height: 25,
             ),
-            GestureDetector(
+            CustomButton(
+              title: 'Get Started',
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const MovieHomeView()));
               },
-              child: Container(
-                height: MediaQuery.of(context).size.height / 12,
-                width: MediaQuery.of(context).size.width - 20,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: DarkThemeColors.primaryColor,
-                ),
-                child: Center(
-                  child: Text(
-                    'Get Started',
-                    style: Styles.style20.copyWith(letterSpacing: 2.5),
-                  ),
-                ),
-              ),
-            )
+            ),
           ],
         ),
       ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:netflix_app/Features/Movies/Presentation/Views/widgets/movie_Image_item.dart';
 import 'package:netflix_app/Features/Movies/Presentation/Views/widgets/now_playing_component.dart';
 import 'package:netflix_app/Features/Movies/Presentation/Views/widgets/movies_component.dart';
+import 'package:netflix_app/core/utils/app_router.dart';
 
 class MovieHomeView extends StatelessWidget {
   const MovieHomeView({super.key});
@@ -11,18 +13,24 @@ class MovieHomeView extends StatelessWidget {
     return Scaffold(
         body: SingleChildScrollView(
       child: Column(
-        children: const [
-          NowPlayingComponent(),
+        children: [
+          const NowPlayingComponent(),
           MoviesComponent(
             componentTitle: 'Popular',
-            movieItemImage: MovieItemImage(),
+            movieItemImage: const MovieItemImage(),
+            pushTo: () {
+              GoRouter.of(context).push(AppRouter.kPopularMoviesScreen);
+            },
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           MoviesComponent(
             componentTitle: 'Top Rated',
-            movieItemImage: MovieItemImage(),
+            movieItemImage: const MovieItemImage(),
+            pushTo: () {
+              GoRouter.of(context).push(AppRouter.kTopRatedScreen);
+            },
           ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:netflix_app/Features/Movies/Presentation/Views/widgets/movie_item.dart';
+import 'package:go_router/go_router.dart';
+import 'package:netflix_app/Features/Movies/Presentation/Views/widgets/movie_List_item.dart';
 import 'package:netflix_app/core/utils/styles.dart';
 
 class PopularmoviesList extends StatelessWidget {
@@ -13,7 +14,9 @@ class PopularmoviesList extends StatelessWidget {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              GoRouter.of(context).pop();
+            },
             icon: const Icon(
               Icons.arrow_back_ios,
               size: 18,
@@ -27,7 +30,7 @@ class PopularmoviesList extends StatelessWidget {
       body: SizedBox(
         height: double.infinity,
         child: ListView.builder(itemBuilder: (context, index) {
-          return const MovieItem();
+          return const MovieListItem();
         }),
       ),
     );
