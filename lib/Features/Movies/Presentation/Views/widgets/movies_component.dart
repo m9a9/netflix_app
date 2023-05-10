@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:netflix_app/Features/Movies/Presentation/Views/widgets/top_rated_movie_image_item.dart';
 
 import '../../../../../core/utils/styles.dart';
-import 'movie_Image_item.dart';
+import 'popular_movie_Image_item.dart';
 
 class MoviesComponent extends StatelessWidget {
   const MoviesComponent(
@@ -10,7 +11,7 @@ class MoviesComponent extends StatelessWidget {
       required this.movieItemImage,
       this.pushTo});
   final String componentTitle;
-  final MovieItemImage movieItemImage;
+  final PopularMovieItemImage movieItemImage;
   final void Function()? pushTo;
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,9 @@ class MoviesComponent extends StatelessWidget {
             const SizedBox(
               height: 8,
             ),
-            const MovieItemImage(),
+            componentTitle == 'Popular'
+                ? const PopularMovieItemImage()
+                : const TopRatedMovieItemImage(),
           ],
         ),
       ),

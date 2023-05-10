@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:netflix_app/core/global/app_theme/themeData_dark.dart';
 import 'package:netflix_app/core/utils/app_router.dart';
+import 'package:netflix_app/core/utils/service_locator.dart';
 
 void main() {
+  setupServiceLocator();
   runApp(const MyApp());
 }
 

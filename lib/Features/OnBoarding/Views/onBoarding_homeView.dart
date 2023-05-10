@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:netflix_app/Features/Movies/Presentation/Views/movie_home_view.dart';
+import 'package:go_router/go_router.dart';
+import 'package:netflix_app/core/utils/app_router.dart';
 
 import '../widgets/custom_Button.dart';
 import '../widgets/custom_indicator.dart';
@@ -66,10 +67,7 @@ class _OnBoardingHomeViewState extends State<OnBoardingHomeView> {
             CustomButton(
               title: 'Get Started',
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const MovieHomeView()));
+                GoRouter.of(context).push(AppRouter.kMovieHomeView);
               },
             ),
           ],

@@ -5,11 +5,11 @@ import 'package:netflix_app/core/global/useCase/use_case.dart';
 
 import '../Entities/movie_details_entity.dart';
 
-class GetMoviesDetails
+class GetMoviesDetailsUseCase
     extends UseCase<MoviesDetailsEntity, MoviesDetailsParameter> {
   final BaseMoviesRepository baseMoviesRepository;
 
-  GetMoviesDetails(this.baseMoviesRepository);
+  GetMoviesDetailsUseCase(this.baseMoviesRepository);
 
   @override
   Future<Either<Failure, MoviesDetailsEntity>> call(

@@ -11,7 +11,7 @@ class TopRatedMoviesCubit extends Cubit<TopRatedMoviesState> {
 
   final GetTopRatedMoviesUseCase getTopRatedMoviesUseCase;
 
-  Future<void> getTopMovies() async {
+  Future<void> getTopRatedMovies() async {
     emit(TopRatedMoviesLoadingState());
     var result = await getTopRatedMoviesUseCase.call();
     result.fold((failure) {
