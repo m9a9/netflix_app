@@ -1,205 +1,196 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:netflix_app/Features/Movies/Presentation/Views/widgets/now_playing_component.dart';
+import 'package:netflix_app/Features/Movies/Data/Repository/movies_repository.dart';
+import 'package:netflix_app/Features/Movies/Domain/Entities/gener_entity.dart';
+import 'package:netflix_app/Features/Movies/Domain/Use%20Cases/movie_details_use_case.dart';
+import 'package:netflix_app/Features/Movies/Domain/Use%20Cases/movie_recommendation_use_case.dart';
+import 'package:netflix_app/Features/Movies/Presentation/Views/widgets/show_recommendation.dart';
 import 'package:netflix_app/Features/Movies/Presentation/manager/Movie_Details_cubit/movie_details_cubit.dart';
 import 'package:netflix_app/Features/Movies/Presentation/manager/Movies_Recommendation_Cubit/movies_recommendation_cubit.dart';
-import 'package:netflix_app/Features/OnBoarding/widgets/custom_Button.dart';
-import 'package:netflix_app/core/global/app_colors/dark_theme_colors.dart';
+import 'package:netflix_app/core/utils/Api_constance.dart';
+import 'package:netflix_app/core/utils/functions/service_locator.dart';
 
 import '../../../../core/utils/styles.dart';
+import '../../../OnBoarding/widgets/custom_Button.dart';
 
 class MoviesDetailsView extends StatelessWidget {
   const MoviesDetailsView({super.key, required this.id});
   final int id;
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-            onPressed: () {
-              GoRouter.of(context).pop();
-            },
-            icon: const Icon(Icons.arrow_back_ios)),
-      ),
-      body: CustomScrollView(slivers: [
-        SliverList(
-          delegate: SliverChildListDelegate([
-            const NowPlayingComponent(),
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: BlocBuilder<MovieDetailsCubit, MovieDetailsState>(
-                    builder: (context, state) {
-                  if (state is MovieDetailsSuccess) {
-                    return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 30,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Colors.red,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    state.movieDetails.releaseDate,
-                                    style: Styles.style12,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              const Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                state.movieDetails.voteAverage.toString(),
-                                style: Styles.style14,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                state.movieDetails.runTime.toString(),
-                                style: Styles.style14,
-                              ),
-                            ],
-                          ),
-                          const AspectRatio(
-                            aspectRatio: 6 / 0.8,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
-                              child: CustomButton(
-                                title: 'Play',
-                              ),
-                            ),
-                          ),
-                          Text(state.movieDetails.overview,
-                              style: Styles.style12,
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis),
-                          Text(
-                            'Genres:[${state.movieDetails.geners}]',
-                            style: Styles.style12.copyWith(color: Colors.green),
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(
-                            width: 28,
-                          ),
-                          Text(
-                            'More Like This',
-                            style: Styles.style18.copyWith(color: Colors.grey),
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ]);
-                  } else if (state is MovieDetailsFailure) {
-                    return Center(
-                      child: Text(
-                        state.errMessage,
-                        style: Styles.style18,
-                      ),
-                    );
-                  } else {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: DarkThemeColors.primaryColor,
-                      ),
-                    );
-                  }
-                })),
-          ]),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => MovieDetailsCubit(
+            GetMoviesDetailsUseCase(getIt.get<MoviesRepository>()),
+          )..getMoviesDetails(id: id),
         ),
-        SliverGrid(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              childAspectRatio: 0.7,
-              mainAxisSpacing: 0.2,
-              crossAxisSpacing: 0.4),
-          delegate: SliverChildBuilderDelegate((context, index) {
-            return BlocBuilder<MoviesRecommendationCubit,
-                MoviesRecommendationState>(builder: (context, state) {
-              if (state is MoviesRecommendationSuccess) {
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: CachedNetworkImage(
-                        imageUrl:
-                            'https://images.unsplash.com/photo-1683345644646-1f207858e681?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzN3x8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60'),
-                  ),
-                );
-              } else if (state is MoviesRecommendationFailure) {
-                return Center(
-                  child: Text(
-                    state.errMessage,
-                    style: Styles.style18,
-                  ),
-                );
-              } else {
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: DarkThemeColors.primaryColor,
-                  ),
-                );
-              }
-            });
-          }),
+        BlocProvider(
+          create: (context) => MoviesRecommendationCubit(
+            GetMoviesRecommendationUseCase(getIt.get<MoviesRepository>()),
+          )..getRecommendationMovies(id: id),
         ),
-
-        // BlocBuilder<MoviesRecommendationCubit, MoviesRecommendationState>(
-        //     builder: (context, state) {
-        //   if (state is MoviesRecommendationSuccess) {
-        //     return SliverGrid(
-        //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        //           crossAxisCount: 3,
-        //           childAspectRatio: 0.7,
-        //           mainAxisSpacing: 0.2,
-        //           crossAxisSpacing: 0.4),
-        //       delegate: SliverChildBuilderDelegate((context, index) {
-        //         return Padding(
-        //           padding:
-        //               const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-        //           child: ClipRRect(
-        //             borderRadius: BorderRadius.circular(12),
-        //             child: CachedNetworkImage(
-        //                 imageUrl:
-        //                     'https://images.unsplash.com/photo-1683345644646-1f207858e681?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzN3x8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60'),
-        //           ),
-        //         );
-        //       }),
-        //     );
-        //   } else if (state is MoviesRecommendationFailure) {
-        //     return Center(
-        //       child: Text(
-        //         state.errMessage,
-        //         style: Styles.style18,
-        //       ),
-        //     );
-        //   } else {
-        //     return Center(
-        //       child: CircularProgressIndicator(
-        //         color: DarkThemeColors.primaryColor,
-        //       ),
-        //     );
-        //   }
-        // })
-      ]),
+      ],
+      child: const Scaffold(body: MovieDetailsBody()),
     );
+  }
+}
+
+class MovieDetailsBody extends StatelessWidget {
+  const MovieDetailsBody({super.key});
+  String _showGenres(List<GenreEntity> genres) {
+    String result = '';
+    for (var genre in genres) {
+      result += '${genre.name}, ';
+    }
+
+    if (result.isEmpty) {
+      return result;
+    }
+
+    return result.substring(0, result.length - 2);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MovieDetailsCubit, MovieDetailsState>(
+        builder: (context, state) {
+      if (state is MovieDetailsSuccess) {
+        return CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              centerTitle: true,
+              title: Text(
+                state.movieDetails.title,
+                style: Styles.style20,
+              ),
+              pinned: true,
+              expandedHeight: MediaQuery.of(context).size.height / 2,
+              collapsedHeight: 80,
+              floating: true,
+              flexibleSpace: FlexibleSpaceBar(
+                background: ShaderMask(
+                  shaderCallback: (rect) {
+                    return const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.grey,
+                        Colors.black,
+                        Colors.grey,
+                      ],
+                      stops: [0.0, 0.5, 1.0, 1.0],
+                    ).createShader(
+                      Rect.fromLTRB(0.0, 0.0, rect.width, rect.height),
+                    );
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl: ApiConstance.imageUrlPath(
+                        state.movieDetails.backdropPath),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+            ),
+            SliverList(
+                delegate: SliverChildListDelegate([
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 30,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.red,
+                    ),
+                    child: Center(
+                      child: Text(
+                        state.movieDetails.releaseDate,
+                        style: Styles.style12,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  const Icon(
+                    Icons.star,
+                    color: Colors.yellow,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    state.movieDetails.voteAverage.toString(),
+                    style: Styles.style14,
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Text(
+                    state.movieDetails.runTime.toString(),
+                    style: Styles.style14,
+                  ),
+                ],
+              ),
+              const AspectRatio(
+                aspectRatio: 6 / 0.8,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                  child: CustomButton(
+                    title: 'Play',
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+                child: Text(state.movieDetails.overview,
+                    style: Styles.style12,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+                child: Text(
+                  _showGenres(state.movieDetails.geners),
+                  style: Styles.style12.copyWith(color: Colors.green),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(
+                width: 28,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+                child: Text(
+                  'More Like This',
+                  style: Styles.style18.copyWith(color: Colors.grey),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ])),
+            const ShowRecommendation()
+          ],
+        );
+      } else if (state is MovieDetailsFailure) {
+        return Center(
+          child: Text(state.errMessage),
+        );
+      } else {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+    });
   }
 }
