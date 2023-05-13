@@ -30,8 +30,9 @@ class TopRatedMovieItemImage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     child: GestureDetector(
                       onTap: () {
-                        GoRouter.of(context)
-                            .push(AppRouter.kMoviesDetailsScreen);
+                        GoRouter.of(context).push(
+                            AppRouter.kMoviesDetailsScreen,
+                            extra: state.topRatedMovies[index].id);
                       },
                       child: CachedNetworkImage(
                         imageUrl: ApiConstance.imageUrlPath(

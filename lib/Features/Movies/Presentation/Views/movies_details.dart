@@ -8,6 +8,7 @@ import 'package:netflix_app/Features/Movies/Domain/Use%20Cases/movie_recommendat
 import 'package:netflix_app/Features/Movies/Presentation/Views/widgets/show_recommendation.dart';
 import 'package:netflix_app/Features/Movies/Presentation/manager/Movie_Details_cubit/movie_details_cubit.dart';
 import 'package:netflix_app/Features/Movies/Presentation/manager/Movies_Recommendation_Cubit/movies_recommendation_cubit.dart';
+import 'package:netflix_app/core/global/app_colors/dark_theme_colors.dart';
 import 'package:netflix_app/core/utils/Api_constance.dart';
 import 'package:netflix_app/core/utils/functions/service_locator.dart';
 
@@ -53,134 +54,148 @@ class MovieDetailsBody extends StatelessWidget {
     return result.substring(0, result.length - 2);
   }
 
+  String _showDuration(int runtime) {
+    final int hours = runtime ~/ 60;
+    final int minutes = runtime % 60;
+
+    if (hours > 0) {
+      return '${hours}h ${minutes}m';
+    } else {
+      return '${minutes}m';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<MovieDetailsCubit, MovieDetailsState>(
         builder: (context, state) {
       if (state is MovieDetailsSuccess) {
-        return CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              centerTitle: true,
-              title: Text(
-                state.movieDetails.title,
-                style: Styles.style20,
-              ),
-              pinned: true,
-              expandedHeight: MediaQuery.of(context).size.height / 2,
-              collapsedHeight: 80,
-              floating: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: ShaderMask(
-                  shaderCallback: (rect) {
-                    return const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.grey,
-                        Colors.black,
-                        Colors.grey,
-                      ],
-                      stops: [0.0, 0.5, 1.0, 1.0],
-                    ).createShader(
-                      Rect.fromLTRB(0.0, 0.0, rect.width, rect.height),
-                    );
-                  },
-                  child: CachedNetworkImage(
-                    imageUrl: ApiConstance.imageUrlPath(
-                        state.movieDetails.backdropPath),
-                    fit: BoxFit.fill,
+        return Hero(
+          tag: 'tag',
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                centerTitle: true,
+                title: Text(
+                  state.movieDetails.title,
+                  style: Styles.style20,
+                ),
+                pinned: true,
+                expandedHeight: MediaQuery.of(context).size.height / 2,
+                collapsedHeight: 80,
+                floating: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: ShaderMask(
+                    shaderCallback: (rect) {
+                      return const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.grey,
+                          Colors.black,
+                          Colors.grey,
+                        ],
+                        stops: [0.0, 0.5, 1.0, 1.0],
+                      ).createShader(
+                        Rect.fromLTRB(0.0, 0.0, rect.width, rect.height),
+                      );
+                    },
+                    child: CachedNetworkImage(
+                      imageUrl: ApiConstance.imageUrlPath(
+                          state.movieDetails.backdropPath),
+                      fit: BoxFit.fill,
+                    ),
                   ),
                 ),
               ),
-            ),
-            SliverList(
-                delegate: SliverChildListDelegate([
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 30,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.red,
-                    ),
-                    child: Center(
-                      child: Text(
-                        state.movieDetails.releaseDate,
-                        style: Styles.style12,
-                        textAlign: TextAlign.center,
+              SliverList(
+                  delegate: SliverChildListDelegate([
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 30,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: DarkThemeColors.backgroundColor,
+                      ),
+                      child: Center(
+                        child: Text(
+                          state.movieDetails.releaseDate,
+                          style: Styles.style14,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  const Icon(
-                    Icons.star,
-                    color: Colors.yellow,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    state.movieDetails.voteAverage.toString(),
-                    style: Styles.style14,
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Text(
-                    state.movieDetails.runTime.toString(),
-                    style: Styles.style14,
-                  ),
-                ],
-              ),
-              const AspectRatio(
-                aspectRatio: 6 / 0.8,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                  child: CustomButton(
-                    title: 'Play',
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    const Icon(
+                      Icons.star,
+                      color: Colors.yellow,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '(${state.movieDetails.voteAverage})'.substring(1, 4),
+                      style: Styles.style14,
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      _showDuration(state.movieDetails.runTime),
+                      style: Styles.style14,
+                    ),
+                  ],
+                ),
+                const AspectRatio(
+                  aspectRatio: 6 / 0.8,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                    child: CustomButton(
+                      title: 'Play',
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                child: Text(state.movieDetails.overview,
-                    style: Styles.style12,
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+                  child: Text(state.movieDetails.overview,
+                      style: Styles.style12,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+                  child: Text(
+                    _showGenres(state.movieDetails.geners),
+                    style: Styles.style12.copyWith(color: Colors.green),
                     maxLines: 3,
-                    overflow: TextOverflow.ellipsis),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                child: Text(
-                  _showGenres(state.movieDetails.geners),
-                  style: Styles.style12.copyWith(color: Colors.green),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              const SizedBox(
-                width: 28,
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-                child: Text(
-                  'More Like This',
-                  style: Styles.style18.copyWith(color: Colors.grey),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+                const SizedBox(
+                  width: 28,
                 ),
-              ),
-            ])),
-            const ShowRecommendation()
-          ],
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
+                  child: Text(
+                    'More Like This',
+                    style: Styles.style18.copyWith(color: Colors.grey),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ])),
+              ShowRecommendation()
+            ],
+          ),
         );
       } else if (state is MovieDetailsFailure) {
         return Center(

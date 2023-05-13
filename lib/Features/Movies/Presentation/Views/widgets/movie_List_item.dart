@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:netflix_app/Features/Movies/Domain/Entities/movie_entity.dart';
+import 'package:netflix_app/core/global/app_colors/dark_theme_colors.dart';
+import 'package:netflix_app/core/utils/Api_constance.dart';
 import 'package:netflix_app/core/utils/app_router.dart';
 
 import '../../../../../core/utils/styles.dart';
@@ -8,13 +11,15 @@ import '../../../../../core/utils/styles.dart';
 class MovieListItem extends StatelessWidget {
   const MovieListItem({
     super.key,
+    required this.movie,
   });
-
+  final MovieEntity movie;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        GoRouter.of(context).push(AppRouter.kMoviesDetailsScreen);
+        GoRouter.of(context)
+            .push(AppRouter.kMoviesDetailsScreen, extra: movie.id);
       },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.94,
@@ -24,22 +29,21 @@ class MovieListItem extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            color: Colors.blueGrey,
+            color: DarkThemeColors.backgroundColor,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 CachedNetworkImage(
-                  imageUrl:
-                      'https://images.unsplash.com/photo-1683345644646-1f207858e681?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwzN3x8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
+                  height: 170,
+                  imageUrl: ApiConstance.imageUrlPath(movie.backdropPath),
                   imageBuilder: (context, imageProvider) {
                     return Padding(
                       padding: const EdgeInsets.only(right: 12),
                       child: Container(
                         width: MediaQuery.of(context).size.width / 4.25,
-                        height: MediaQuery.of(context).size.width / 2.8,
                         decoration: BoxDecoration(
                             image: DecorationImage(
-                                image: imageProvider, fit: BoxFit.fill),
+                                image: imageProvider, fit: BoxFit.cover),
                             borderRadius: BorderRadius.circular(12)),
                       ),
                     );
@@ -54,7 +58,7 @@ class MovieListItem extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
                           child: Text(
-                            'All the Bright Places',
+                            movie.title,
                             style: Styles.style20,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -67,13 +71,12 @@ class MovieListItem extends StatelessWidget {
                             height: 30,
                             width: 40,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.red,
-                            ),
+                                borderRadius: BorderRadius.circular(8),
+                                color: DarkThemeColors.backgroundColor),
                             child: Center(
                               child: Text(
-                                '2020',
-                                style: Styles.style12,
+                                movie.releaseDate,
+                                style: Styles.style14,
                               ),
                             ),
                           ),
@@ -85,7 +88,7 @@ class MovieListItem extends StatelessWidget {
                             color: Colors.yellow,
                           ),
                           Text(
-                            '4.8',
+                            '(${movie.voteAverage})'.substring(1, 4),
                             style: Styles.style14,
                           ),
                         ],
@@ -94,8 +97,7 @@ class MovieListItem extends StatelessWidget {
                         width: MediaQuery.of(context).size.width * 0.7,
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(5, 10, 0, 0),
-                          child: Text(
-                              '100% Australian Angus grain-fed beef with cheese and pickles.  Served with fries',
+                          child: Text(movie.overview,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: Styles.style14),

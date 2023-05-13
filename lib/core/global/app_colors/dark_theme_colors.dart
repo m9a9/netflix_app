@@ -5,4 +5,5 @@ class DarkThemeColors {
   static Color backgroundColor = const Color(0xff000000);
   static Color textColor = const Color(0xffFFFFFF);
   static Color numbersColors = const Color(0xff46D267);
+  static Color itemListColor = const Color(0xff001219);
 }

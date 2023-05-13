@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:netflix_app/Features/Movies/Presentation/Views/widgets/top_rated_movie_image_item.dart';
+import 'package:netflix_app/core/utils/app_router.dart';
 
 import '../../../../../core/utils/styles.dart';
 import 'popular_movie_Image_item.dart';
 
 class MoviesComponent extends StatelessWidget {
-  const MoviesComponent(
-      {super.key,
-      required this.componentTitle,
-      required this.movieItemImage,
-      this.pushTo});
+  const MoviesComponent({
+    super.key,
+    required this.componentTitle,
+    required this.movieItemImage,
+  });
   final String componentTitle;
   final PopularMovieItemImage movieItemImage;
-  final void Function()? pushTo;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,21 +30,27 @@ class MoviesComponent extends StatelessWidget {
                   componentTitle,
                   style: Styles.style20.copyWith(letterSpacing: 2.4),
                 ),
-                GestureDetector(
-                  onTap: pushTo,
-                  child: Row(
-                    children: [
-                      Text(
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        componentTitle == 'Popular'
+                            ? GoRouter.of(context)
+                                .push(AppRouter.kPopularMoviesScreen)
+                            : GoRouter.of(context)
+                                .push(AppRouter.kTopRatedScreen);
+                      },
+                      child: Text(
                         'See More',
                         style: Styles.style14.copyWith(color: Colors.grey),
                       ),
-                      const Icon(
-                        Icons.arrow_forward_ios,
-                        size: 14,
-                        color: Colors.grey,
-                      )
-                    ],
-                  ),
+                    ),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 14,
+                      color: Colors.grey,
+                    )
+                  ],
                 )
               ],
             ),

@@ -12,8 +12,8 @@ class CustomIndicator extends StatelessWidget {
       children: List.generate(
         3,
         (index) => Container(
-          width: 8.0,
-          height: 8.0,
+          width: index == cindex ? 20 : 8,
+          height: 15,
           margin: const EdgeInsets.symmetric(horizontal: 4.0),
           decoration: BoxDecoration(
             shape: BoxShape.circle,

@@ -14,26 +14,18 @@ class MovieHomeView extends StatelessWidget {
       child: Scaffold(
           body: SingleChildScrollView(
         child: Column(
-          children: [
-            const NowPlayingComponent(),
+          children: const [
+            NowPlayingComponent(),
             MoviesComponent(
               componentTitle: 'Popular',
-              movieItemImage: const PopularMovieItemImage(),
-              pushTo: () {
-                GoRouter.of(context).push(AppRouter.kPopularMoviesScreen);
-              },
+              movieItemImage: PopularMovieItemImage(),
             ),
-            const SizedBox(
+            SizedBox(
               height: 20,
             ),
             MoviesComponent(
               componentTitle: 'Top Rated',
-              movieItemImage: const PopularMovieItemImage(),
-              pushTo: () {
-                GoRouter.of(context).push(
-                  AppRouter.kTopRatedScreen,
-                );
-              },
+              movieItemImage: PopularMovieItemImage(),
             ),
           ],
         ),
